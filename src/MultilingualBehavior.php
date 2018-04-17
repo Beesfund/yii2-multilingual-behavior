@@ -226,16 +226,28 @@ class MultilingualBehavior extends Behavior
     {
         if (!class_exists($this->langClassName, false)) {
             $namespace = substr($this->langClassName, 0, strrpos($this->langClassName, '\\'));
-            eval('
-            namespace ' . $namespace . ';
-            use yii\db\ActiveRecord;
-            class ' . $this->langClassShortName . ' extends ActiveRecord
-            {
-                public static function tableName()
+			if(!$namespace) {
+                eval('
+                use yii\db\ActiveRecord;
+                class ' . $this->langClassName . ' extends ActiveRecord
                 {
-                    return \'' . $this->tableName . '\';
-                }
-            }');
+                    public static function tableName()
+                    {
+                        return \'' . $this->tableName . '\';
+                    }
+                }');
+            } else {
+		        eval('
+		        namespace ' . $namespace . ';
+		        use yii\db\ActiveRecord;
+		        class ' . $this->langClassShortName . ' extends ActiveRecord
+		        {
+		            public static function tableName()
+		            {
+		                return \'' . $this->tableName . '\';
+		            }
+		        }');
+			}
         }
     }
 
